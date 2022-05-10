@@ -18,6 +18,9 @@ namespace WpfApp1.ViewModel
     public class MainViewModel : ViewModelBase
     {
         Thread _thread;
+        Task _task;
+        CancellationTokenSource tokenSource = new CancellationTokenSource();
+        CancellationToken token;
 
         #region string const
         private const string strSuccessfully = "Successfully!";
@@ -247,8 +250,11 @@ namespace WpfApp1.ViewModel
 
 
                     if (processes1.Length > 0) IsRunningGUI = true;
+                    else IsRunningGUI = false;
                     if (processes2.Length > 0) IsRunningLogicConfig = true;
+                    else IsRunningLogicConfig = false;
                     if (processes3.Length > 0) IsRunningLogic = true;
+                    else IsRunningLogic = false;
 
 
                     //1.
@@ -326,6 +332,86 @@ namespace WpfApp1.ViewModel
         {
             if (_thread.IsAlive)
                 _thread.Interrupt();
+        }
+
+        public bool Run_2()
+        {
+             token = tokenSource.Token;
+            _task = Task.Factory.StartNew(() =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        //KohyoungGUI, AOIConfig, AOIGUI
+
+                        Process[] processes1 = Process.GetProcessesByName("KohyoungGUI");
+
+                        Process[] processes2 = Process.GetProcessesByName("AOIConfig");
+
+                        Process[] processes3 = Process.GetProcessesByName("AOIGUI");
+
+                        if (processes1.Length > 0) 
+                            IsRunningGUI = true;
+                        else 
+                            IsRunningGUI = false;
+
+                        if (processes2.Length > 0)
+                        {
+                            IsRunningLogicConfig = true;
+                            if(processes3.Length > 0)
+                            {
+                                MessageBox.Show("AOIConfig is running, cannot open!","Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                foreach (var process in processes3)
+                                {
+                                    process.Kill();
+                                }
+
+                            }
+                        }
+                        else
+                            IsRunningLogicConfig = false;
+
+                        if (processes3.Length > 0)
+                        {
+                            IsRunningLogic = true;
+                            if (processes2.Length > 0)
+                            {
+                                MessageBox.Show("AOIGUI is running, cannot open!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                foreach (var process in processes2)
+                                {
+                                    process.Kill();
+                                }
+                            }
+                        }
+                        else
+                            IsRunningLogic = false;
+
+                        if (processes1.Length == 0 && processes3.Length == 0)
+                        {
+                            Process.Start(FilePath.StartGUI);
+                            Process.Start(FilePath.StartLogicConfig);
+                            Task.Delay(2);
+                        }
+
+                        Task.Delay(5);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+                //if (token.IsCancellationRequested)
+                //    token.ThrowIfCancellationRequested();
+            }, token);
+            if (_task.Status == TaskStatus.Running)
+                return true;
+            else
+                return false;
+        }
+        public void Stop_2()
+        {
+            tokenSource.Cancel();
         }
         #endregion
     }

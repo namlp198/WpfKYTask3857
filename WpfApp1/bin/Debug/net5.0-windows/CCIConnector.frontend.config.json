@@ -1,0 +1,14 @@
+﻿{
+ "common": {
+  "reqRepTimeoutMs": "30000",
+  "reqRepRetryCount": "1",
+  "heartbeatInterval": "10000",
+  "heartbeatTimeout": "30000",
+  "heartbeatTtl": "30000"
+ },
+ "frontend": {
+  "subscribeEndPoint": "tcp://127.0.0.1:50000",
+  "requestEndPoint": "tcp://127.0.0.1:50001",
+  "asyncRequestEndPoint": ""
+ }
+}

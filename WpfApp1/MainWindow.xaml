@@ -14,9 +14,17 @@
         Closing="Window_Closing">
     <Window.Resources>
         <localcolor:MyConverter x:Key="MyConverter" />
-        <localcolor:ConverterBoolToString x:Key="ConverterBoolToString"/>
+        <localcolor:ConverterBoolToString x:Key="ConverterBoolToString" />
+        <RoutedUICommand x:Key="MyCommandESC"
+                         Text="text" />
     </Window.Resources>
-
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource MyCommandESC}" Executed="CommandBinding_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Esc"
+                    Command="{StaticResource MyCommandESC}" />
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

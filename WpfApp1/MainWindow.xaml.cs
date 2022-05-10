@@ -44,9 +44,13 @@ namespace WpfApp1
 
             }
 
-            if(MainViewModel.Instance.Run())
-            {
+            //if(MainViewModel.Instance.Run())
+            //{
                 
+            //}
+            if(MainViewModel.Instance.Run_2())
+            {
+
             }
         }
 
@@ -57,7 +61,14 @@ namespace WpfApp1
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MainViewModel.Instance.Stop();
+            //MainViewModel.Instance.Stop();
+
+            MainViewModel.Instance.Stop_2();
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
